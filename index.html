@@ -1,37 +1,58 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTC-6" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Solicitud de Soporte - Contrasys</title>
-  <meta name="theme-color" content="#0066cc" />
-  <link rel="icon" href="https://yourcompany.freshdesk.com/favicon.ico">
+  <title>Soporte Técnico - Contrasys</title>
+  <meta name="theme-color" content="#0a3c84" />
+  <link rel="icon" href="https://yourcompany.freshdesk.com/favicon.ico" />
   <style>
     body {
       margin: 0;
       padding: 0;
+      font-family: system-ui, sans-serif;
       background-color: #f4f6f8;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      font-family: sans-serif;
+      justify-content: flex-start;
+      min-height: 100vh;
     }
-    #freshdesk-widget {
+
+    .container {
       width: 100%;
-      max-width: 400px;
+      max-width: 480px;
+      padding: 24px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #0a3c84;
+    }
+
+    p {
+      margin: 0.5rem 0 1.5rem;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    #freshdesk-widget {
+      min-height: 400px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Contenedor del widget -->
-  <div id="freshdesk-widget">Bienvenid@ al formulario de soporte</div>
-    <h2>Instrucciones para generar Ticket</h2>
-    <p>1. Presiona el botón verde "Ayuda" para inicar la solicitúd.</p>
-    <p>2. Llena los campos del formulario</p>
-    <p>3. Por último, presiona el botón "Crear" y el Ticket se habrá creado satisfactoriamente</p>
-  
+  <div class="container">
+    <h2>Solicitud de Soporte</h2>
+    <p>Por favor, completa el siguiente formulario para generar un ticket de atención.</p>
+
+    <!-- Contenedor del widget -->
+    <div id="freshdesk-widget">Cargando formulario...</div>
+  </div>
 
   <!-- Script del widget de Freshdesk -->
   <script>
@@ -51,3 +72,4 @@
 
 </body>
 </html>
+
