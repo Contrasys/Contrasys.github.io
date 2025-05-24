@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTC-6" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitud de Soporte - Contrasys</title>
+  <meta name="theme-color" content="#0066cc" />
+  <link rel="icon" href="https://yourcompany.freshdesk.com/favicon.ico">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+    #freshdesk-widget {
+      width: 100%;
+      max-width: 400px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Contenedor del widget -->
+  <div id="freshdesk-widget">Cargando formulario de soporte...</div>
+
+  <!-- Script del widget de Freshdesk -->
+  <script>
+    window.fwSettings = {
+      'widget_id': 43000003613
+    };
+    !function () {
+      if ("function" != typeof window.FreshworksWidget) {
+        var n = function () {
+          n.q.push(arguments);
+        };
+        n.q = [], window.FreshworksWidget = n;
+      }
+    }();
+  </script>
+  <script type="text/javascript" src="https://widget.freshworks.com/widgets/43000003613.js" async defer></script>
+
+</body>
+</html>
