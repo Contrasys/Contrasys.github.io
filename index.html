@@ -1,75 +1,704 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Soporte Técnico - Contrasys</title>
-  <meta name="theme-color" content="#0a3c84" />
-  <link rel="icon" href="https://yourcompany.freshdesk.com/favicon.ico" />
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, sans-serif;
-      background-color: #f4f6f8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora de Turno – NOC</title>
 
-    .container {
-      width: 100%;
-      max-width: 480px;
-      padding: 24px;
-      box-sizing: border-box;
-      text-align: center;
-    }
+    <style>
+        /* --- 1. Variables y Estilos Generales --- */
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #007bff;
+            --text-color: #333;
+            --bg-color: #f4f4f9;
+            --card-bg-color: #ffffff;
+            --border-color: #ddd;
+            --input-bg-color: #fdfdfd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-text-color: #ffffff;
+        }
 
-    h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #0a3c84;
-    }
+        body.dark-mode {
+            --primary-color: #4dabf7;
+            --secondary-color: #66b3ff;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a2e;
+            --card-bg-color: #2c2c44;
+            --border-color: #444;
+            --input-bg-color: #3a3a50;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --button-text-color: #1a1a2e;
+        }
 
-    p {
-      margin: 0.5rem 0 1.5rem;
-      font-size: 1rem;
-      color: #333;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    #freshdesk-widget {
-      min-height: 400px;
-    }
-  </style>
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--card-bg-color);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.2em;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        section {
+            margin-bottom: 25px;
+        }
+
+        /* --- 2. Encabezado --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            height: 60px; /* Ajusta el tamaño del logo */
+            margin-right: 15px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+        }
+
+        /* --- 3. Modo Oscuro/Claro Switch --- */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 28px;
+            position: relative;
+            width: 56px;
+        }
+        .theme-switch input {
+            display:none;
+        }
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 20px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 20px;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(28px);
+        }
+
+        /* --- 4. Campos de Formulario --- */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="datetime-local"], input[type="time"], select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--input-bg-color);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="datetime-local"]:focus, input[type="time"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 25%, transparent);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+        }
+
+        .form-row .form-group {
+            flex: 1; /* Distribuye el espacio equitativamente */
+            min-width: 250px; /* Evita que los campos sean demasiado pequeños */
+        }
+
+        /* --- 5. Botones --- */
+        .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            text-decoration: none; /* Para el botón de exportar */
+        }
+
+        .button:hover {
+            background-color: color-mix(in srgb, var(--primary-color) 85%, black);
+            transform: translateY(-2px);
+        }
+
+        .button-danger {
+            background-color: #dc3545;
+        }
+        .button-danger:hover {
+            background-color: color-mix(in srgb, #dc3545 85%, black);
+        }
+
+        /* --- 6. Actividades Realizadas --- */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            background-color: var(--input-bg-color);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .activity-item input[type="text"] {
+            flex-grow: 1;
+        }
+        .activity-item input[type="time"] {
+            width: 100px;
+            flex-shrink: 0;
+        }
+
+        .activity-item .delete-btn {
+            flex-shrink: 0;
+        }
+
+        .add-button-row {
+            margin-top: 15px;
+        }
+
+        /* --- 7. Tickets Generados --- */
+        .tickets-table-container {
+            overflow-x: auto; /* Permite scroll horizontal en móviles */
+        }
+
+        .tickets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .tickets-table th, .tickets-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .tickets-table th {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            font-weight: 600;
+            white-space: nowrap; /* Evita que los encabezados se rompan */
+        }
+
+        .tickets-table td input[type="text"], .tickets-table td select, .tickets-table td textarea {
+            width: 100%;
+            border: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+            color: var(--text-color);
+            font-size: 0.95em;
+        }
+        .tickets-table td textarea {
+            min-height: 40px;
+            resize: vertical;
+        }
+
+        .tickets-table td .delete-btn {
+            padding: 5px 10px;
+            font-size: 0.8em;
+        }
+
+        /* --- 8. Responsive Design --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header-title {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .theme-switch-wrapper {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .form-row .form-group {
+                min-width: 100%; /* Ocupa todo el ancho en móviles */
+            }
+
+            .activity-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .activity-item input[type="text"], .activity-item input[type="time"] {
+                width: 100%;
+            }
+
+            .tickets-table th, .tickets-table td {
+                font-size: 0.9em;
+            }
+        }
+
+        /* --- 9. Estilos de Impresión (PDF) --- */
+        @media print {
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-size: 10pt !important; /* Tamaño de fuente para impresión */
+                -webkit-print-color-adjust: exact !important; /* Forzar impresión de colores de fondo */
+                color-adjust: exact !important; /* Estándar */
+            }
+
+            .container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: none !important; /* Elimina el max-width para impresión */
+                background-color: var(--card-bg-color) !important; /* Asegura que el fondo de la tarjeta se imprima */
+            }
+
+            /* Ocultar elementos de control */
+            .theme-switch-wrapper, .button, .delete-btn, .add-button-row {
+                display: none !important;
+            }
+
+            header {
+                border-bottom: 2px solid #ccc !important;
+                padding-bottom: 10px !important;
+                margin-bottom: 20px !important;
+                flex-direction: row !important; 
+                justify-content: center !important;
+            }
+            .header-title {
+                justify-content: center !important;
+                width: 100% !important;
+            }
+            h1 {
+                color: #000 !important; /* Título en negro para impresión */
+                font-size: 1.8em !important;
+            }
+
+            h2 {
+                color: #000 !important;
+                border-bottom: 1px solid #ccc !important;
+                padding-bottom: 5px !important;
+                margin-top: 20px !important;
+            }
+
+            /* Asegurar que los valores de los inputs sean visibles y con el estilo deseado */
+            input[type="text"], input[type="datetime-local"], input[type="time"], select, textarea {
+                border: none !important;
+                background: none !important;
+                color: #000 !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+            select {
+                -webkit-appearance: none !important; /* Elimina el estilo de select por defecto */
+                -moz-appearance: none !important;
+                appearance: none !important;
+            }
+
+            /* Asegurar que las tablas y listas se vean bien */
+            .tickets-table th {
+                background-color: var(--primary-color) !important;
+                color: var(--button-text-color) !important;
+            }
+            .tickets-table td {
+                border: 1px solid #eee !important;
+            }
+            .activity-item {
+                background-color: var(--input-bg-color) !important;
+                border: 1px solid var(--border-color) !important;
+            }
+
+            /* Ajustes para paginación */
+            @page {
+                size: A4; /* Define el tamaño de la página */
+                margin: 1.5cm; /* Márgenes de la página */
+            }
+
+            /* Evitar cortes de elementos */
+            section, .tickets-table tbody tr {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <img src="logo contrasys.png" alt="Logo Contrasys" class="logo">
+                <h1>Bitácora de Turno – NOC</h1>
+            </div>
+            <div class="theme-switch-wrapper">
+                <span>Modo Oscuro</span>
+                <label class="theme-switch" for="theme-switch">
+                    <input type="checkbox" id="theme-switch" />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </header>
 
-  <div class="container">
-    <h2>Solicitud de Soporte</h2>
-    <p>Por favor, completa el siguiente formulario para generar un ticket de atención.</p>
+        <main>
+            <section id="datos-turno">
+                <h2>Datos del Turno</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre-ingeniero">Nombre del Ingeniero NOC:</label>
+                        <input type="text" id="nombre-ingeniero" placeholder="Ej. Juan Pérez" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="turno-curso">Turno en Curso:</label>
+                        <select id="turno-curso" required>
+                            <option value="" disabled selected>Seleccione un turno</option>
+                            <option value="matutino">Matutino</option>
+                            <option value="vespertino">Vespertino</option>
+                            <option value="nocturno">Nocturno</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha-hora">Fecha y Hora:</label>
+                        <input type="datetime-local" id="fecha-hora" required>
+                    </div>
+                </div>
+            </section>
 
-    <!-- Contenedor del widget -->
-    <div id="freshdesk-widget">Cargando formulario...</div>
-  </div>
+            <section id="actividades-realizadas">
+                <h2>Actividades Realizadas en el Día</h2>
+                <div id="actividades-list">
+                    <!-- Actividades se añadirán aquí -->
+                </div>
+                <button type="button" class="button add-button-row" id="add-activity-btn">&#10133; Añadir Actividad</button>
+            </section>
 
-  <!-- Script del widget de Freshdesk -->
-  <script>
-    window.fwSettings = {
-      'widget_id': 43000003613
-    };
-    !function () {
-      if ("function" != typeof window.FreshworksWidget) {
-        var n = function () {
-          n.q.push(arguments);
-        };
-        n.q = [], window.FreshworksWidget = n;
-      }
-    }();
-  </script>
-  <script type="text/javascript" src="https://widget.freshworks.com/widgets/43000003613.js" async defer></script>
+            <section id="tickets-generados">
+                <h2>Tickets Generados en el Turno</h2>
+                <div class="tickets-table-container">
+                    <table class="tickets-table">
+                        <thead>
+                            <tr>
+                                <th>ID/Folio</th>
+                                <th>Asunto</th>
+                                <th>Prioridad</th>
+                                <th>Estado</th>
+                                <th>Notas</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tickets-tbody">
+                            <!-- Tickets se añadirán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="button add-button-row" id="add-ticket-btn">&#10133; Añadir Ticket</button>
+            </section>
 
+            <section id="notas-pendientes">
+                <h2>Notas y Pendientes para el Siguiente Turno</h2>
+                <div class="form-group">
+                    <textarea id="observaciones" placeholder="Escriba aquí cualquier observación importante o pendiente para el siguiente turno..."></textarea>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <button type="button" class="button" id="export-pdf-btn">&#128462; Exportar a PDF</button>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. Lógica del Modo Oscuro/Claro ---
+            const themeSwitch = document.getElementById('theme-switch');
+            const body = document.body;
+
+            // Cargar preferencia del usuario al inicio
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeSwitch.checked = true;
+            } else if (savedTheme === 'light') {
+                body.classList.remove('dark-mode');
+                themeSwitch.checked = false;
+            }
+
+            // Escuchar cambios en el switch
+            themeSwitch.addEventListener('change', () => {
+                if (themeSwitch.checked) {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // --- 2. Lógica de Fecha y Hora Automática ---
+            const fechaHoraInput = document.getElementById('fecha-hora');
+            const now = new Date();
+            // Formatear a YYYY-MM-DDTHH:MM para input datetime-local
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            fechaHoraInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+            // --- 3. Lógica de Actividades Realizadas ---
+            const actividadesList = document.getElementById('actividades-list');
+            const addActivityBtn = document.getElementById('add-activity-btn');
+
+            addActivityBtn.addEventListener('click', () => {
+                addActivityItem();
+            });
+
+            /**
+             * Añade una nueva fila de actividad a la lista.
+             * @param {string} time - Hora de la actividad (HH:MM).
+             * @param {string} description - Descripción de la actividad.
+             */
+            function addActivityItem(time = '', description = '') {
+                const activityDiv = document.createElement('div');
+                activityDiv.className = 'activity-item';
+
+                // Campo de hora (autocompletado y editable)
+                const timeInput = document.createElement('input');
+                timeInput.type = 'time';
+                timeInput.value = time || new Date().toTimeString().slice(0, 5); // HH:MM
+                timeInput.placeholder = 'HH:MM';
+
+                // Campo de descripción
+                const descriptionInput = document.createElement('input');
+                descriptionInput.type = 'text';
+                descriptionInput.value = description;
+                descriptionInput.placeholder = 'Descripción de la actividad';
+
+                // Botón de eliminar
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'button button-danger delete-btn';
+                deleteBtn.innerHTML = '&#10060;'; // Icono de cruz
+                deleteBtn.title = 'Eliminar actividad';
+                deleteBtn.addEventListener('click', () => {
+                    activityDiv.remove();
+                });
+
+                activityDiv.appendChild(timeInput);
+                activityDiv.appendChild(descriptionInput);
+                activityDiv.appendChild(deleteBtn);
+                actividadesList.appendChild(activityDiv);
+
+                descriptionInput.focus(); // Enfocar el campo de descripción para facilitar la entrada
+            }
+
+            // Añadir una actividad inicial al cargar la página
+            addActivityItem();
+
+            // --- 4. Lógica de Tickets Generados ---
+            const ticketsTbody = document.getElementById('tickets-tbody');
+            const addTicketBtn = document.getElementById('add-ticket-btn');
+
+            addTicketBtn.addEventListener('click', () => {
+                addTicketRow();
+            });
+
+            /**
+             * Añade una nueva fila de ticket a la tabla.
+             * @param {string} id - ID/Folio del ticket.
+             * @param {string} asunto - Asunto del ticket.
+             * @param {string} prioridad - Prioridad del ticket.
+             * @param {string} estado - Estado del ticket.
+             * @param {string} notas - Notas adicionales del ticket.
+             */
+            function addTicketRow(id = '', asunto = '', prioridad = '', estado = '', notas = '') {
+                const row = document.createElement('tr');
+
+                // Función auxiliar para crear celdas con input
+                const createCellWithInput = (type, value, placeholder, tagName = 'input') => {
+                    const cell = document.createElement('td');
+                    const input = document.createElement(tagName);
+                    input.type = type;
+                    input.value = value;
+                    input.placeholder = placeholder;
+                    cell.appendChild(input);
+                    return cell;
+                };
+
+                // ID/Folio
+                row.appendChild(createCellWithInput('text', id, 'ID/Folio'));
+
+                // Asunto
+                row.appendChild(createCellWithInput('text', asunto, 'Asunto del ticket'));
+
+                // Prioridad
+                const prioridadCell = document.createElement('td');
+                const prioridadSelect = document.createElement('select');
+                ['Baja', 'Media', 'Alta', 'Crítica'].forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt.toLowerCase();
+                    option.textContent = opt;
+                    if (opt.toLowerCase() === prioridad) option.selected = true;
+                    prioridadSelect.appendChild(option);
+                });
+                prioridadCell.appendChild(prioridadSelect);
+                row.appendChild(prioridadCell);
+
+                // Estado
+                const estadoCell = document.createElement('td');
+                const estadoSelect = document.createElement('select');
+                ['Abierto', 'En Proceso', 'Cerrado', 'Pendiente'].forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt.toLowerCase().replace(' ', '-');
+                    option.textContent = opt;
+                    if (opt.toLowerCase().replace(' ', '-') === estado) option.selected = true;
+                    estadoSelect.appendChild(option);
+                });
+                estadoCell.appendChild(estadoSelect);
+                row.appendChild(estadoCell);
+
+                // Notas
+                row.appendChild(createCellWithInput('text', notas, 'Notas del ticket', 'textarea'));
+
+                // Botón de eliminar
+                const actionCell = document.createElement('td');
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'button button-danger delete-btn';
+                deleteBtn.innerHTML = '&#10060;'; // Icono de cruz
+                deleteBtn.title = 'Eliminar ticket';
+                deleteBtn.addEventListener('click', () => {
+                    row.remove();
+                });
+                actionCell.appendChild(deleteBtn);
+                row.appendChild(actionCell);
+
+                ticketsTbody.appendChild(row);
+            }
+
+            // Añadir un ticket inicial al cargar la página
+            addTicketRow();
+
+            // --- 5. Lógica de Exportar a PDF (usando window.print()) ---
+            const exportPdfBtn = document.getElementById('export-pdf-btn');
+            exportPdfBtn.addEventListener('click', () => {
+                // Añadir una clase al body para activar los estilos de impresión
+                body.classList.add('printing');
+
+                // Pequeño retraso para asegurar que los estilos se apliquen antes de imprimir
+                // y que el navegador tenga tiempo de aplicar la clase 'printing'
+                setTimeout(() => {
+                    window.print();
+                    // Eliminar la clase después de que la ventana de impresión se cierre
+                    // (o después de un tiempo razonable si no hay un evento directo)
+                    body.classList.remove('printing');
+                }, 300);
+            });
+        });
+    </script>
 </body>
 </html>
-
